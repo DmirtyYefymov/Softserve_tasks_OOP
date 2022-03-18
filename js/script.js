@@ -9,8 +9,8 @@ class Student {
     showFullName(midleName) {
         return this.fullName + " " + midleName;   
     }
-    nameIncludes() {
-        return stud1.hasOwnProperty('fullName');
+    nameIncludes(data) {
+        return this.showFullName().includes(data);
     }
     get direction () {
         return this._direction;
@@ -19,7 +19,9 @@ class Student {
         this._name = value;
     }
     showCourse() {
-        return  2022 - this.year;
+        const currentCourse = new Date().getFullYear() - this.year;
+        if (currentCourse < 1 || currentCourse > 6) throw new Error('Wrong year');
+        return currentCourse;
     }
     static studentBuilder() {
         return new Student("Ihor Kohut", "qc");
@@ -50,24 +52,47 @@ console.log(stud2.showCourse());
 
 
 //Task 3
-class Worker extends Student {
-    constructor(fullName, dayRate, workDays, _experience) {
-        super(fullName);
+class Worker  {
+    #expirience = 1.2;
+    constructor(fullName, dayRate, workDays, arr) {
+        this.fullName = fullName;
         this.dayRate = dayRate;
         this.workDays = workDays;
-        this._experience = 1.2;
+        this.arr = arr;
+        // arr.push(this);
     }
-    showSalary () {
+    getSalary () {
         return this.dayRate * this.workDays;
     }
-    get showSalaryWithExperience () {
-        return this._experience * (this.dayRate * this.workDays);
+    getSalaryWithExperience () {
+        return this.getSalary() * this.#expirience;
     }
-    get setExp () {
-        return this._experience;
+
+    showWorker() {
+        this.arr.sort((a,b) => a.getSalaryWithExperience()>b.getSalaryWithExperience()?1:-1);
+        console.log("Sorted by salary");
+        this.arr.forEach((el) => console.log(el.fullName + ':' + el.getSalaryWithExperience()));
+    }
+
+    showWorkerWithoutExp() {
+        this.arr.sort((a,b) => a.getSalary()>b.getSalary()?1:-1);
+        console.log("Sorted by salary");
+        this.arr.forEach((el) => console.log(el.fullName + ':' + el.getSalary()));
+    }
+
+    showSalary() {
+        return `${this.fullName} salary : ${this.getSalary()}`;
+    }
+
+    showSalaryWithExperience () {
+        return `${this.fullName} salary : ${this.getSalary()}`;
+    }
+
+    get showExp () {
+        return this.#expirience;
     }
     set setExp (num) {
-        this._experience = num;
+        this.#expirience = num;
     }
 }
 
@@ -76,55 +101,31 @@ const worker1 = new Worker("John Johnson", 20, 23);
 
 console.log(worker1.fullName);
 console.log("New experience: " + worker1.setExp);
-console.log("John Johnson salary: " + worker1.showSalaryWithExperience);
+console.log("John Johnson salary: " + worker1.getSalaryWithExperience());
 worker1.setExp = 1.5;
 console.log("New experience: " + worker1.setExp);
-console.log("John Johnson salary: " + worker1.showSalaryWithExperience);
+console.log("John Johnson salary: " + worker1.getSalaryWithExperience());
 
 const worker2 = new Worker("Tom Tomson", 48, 22);
 
 console.log(worker2.fullName);
 console.log("New experience: " + worker2.setExp);
-console.log("Tom Tomson salary: " + worker2.showSalaryWithExperience);
+console.log("Tom Tomson salary: " + worker2.getSalaryWithExperience());
 worker2.setExp = 1.5;
 console.log("New experience: " + worker2.setExp);
-console.log("Tom Tomson salary: " + worker2.showSalaryWithExperience);
+console.log("Tom Tomson salary: " + worker2.getSalaryWithExperience());
 
 const worker3 = new Worker("Andy Ander", 29, 23);
 
 console.log(worker3.fullName);
 console.log("New experience: " + worker3.setExp);
-console.log("Andy Ander salary: " + worker3.showSalaryWithExperience);
+console.log("Andy Ander salary: " + worker3.getSalaryWithExperience());
 worker3.setExp = 1.5;
 console.log("New experience: " + worker3.setExp);
-console.log("Andy Ander salary: " + worker3.showSalaryWithExperience);
+console.log("Andy Ander salary: " + worker3.getSalaryWithExperience());
 
 
-class WorkersCollection extends Student {
-    constructor(list = [], _experience) {
-        super(_experience);
-        this.list = list;
-    }
-    add(worker) {
-      this.list.push(worker);
-    }
-    getSorted() {
-      const el = document.querySelector('ol');
-      el.innerText = '';
-      this.list.sort((a, b) => a.showSalaryWithExperience - b.showSalaryWithExperience);
-      this.list.forEach(worker => el.insertAdjacentHTML(
-        'beforeend',
-        `<li>${worker.fullName} salary: ${worker.showSalaryWithExperience}</li>`
-      ));
-    }
-  }
 
-  const collection = new WorkersCollection();
-  
-  collection.add(new Worker("John Johnson", 20, 23));
-  collection.add(new Worker("Tom Tomson", 48, 22));
-  collection.add(new Worker("Andy Ander", 29, 23));
-  
-  collection.getSorted();
+
 
 
